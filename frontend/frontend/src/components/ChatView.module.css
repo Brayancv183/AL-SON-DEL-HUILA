@@ -1,0 +1,63 @@
+ /* ChatView.module.css */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(4px);
+  z-index: 500;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.panel {
+  background: var(--color-noche-soft);
+  border: 1px solid rgba(196,98,45,0.2);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  width: 100%;
+  max-width: 700px;
+  padding: 3rem 2.5rem;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  background: var(--color-noche-mid);
+  color: var(--text-secondary);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.close:hover {
+  color: white;
+  background: var(--color-tierra);
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  margin-bottom: 0.75rem;
+}
+
+.sub {
+  color: var(--text-muted);
+  margin-bottom: 2rem;
+}
+
+.proximamente {
+  background: var(--color-noche-mid);
+  border-radius: var(--radius-md);
+  padding: 2rem;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 1rem;
+}

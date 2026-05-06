@@ -1,0 +1,108 @@
+ .wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.inputBox {
+  position: relative;
+  height: 58px;
+  border-radius: var(--radius-md);
+  border: 1px solid #2a2520;
+  background: #111008;
+  transition: background 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+}
+
+.inputBox.focused {
+  background: #161208;
+  box-shadow: 0 0 0 3px rgba(212,168,67,0.1);
+}
+
+.inputBox.error {
+  box-shadow: 0 0 0 3px rgba(224,82,82,0.1);
+}
+
+/* Label flotante */
+.label {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  pointer-events: none;
+  transition: all 0.18s cubic-bezier(0.4,0,0.2,1);
+  font-family: var(--font-body);
+}
+
+.labelWithIcon { left: 42px; }
+
+.labelFloat {
+  top: 10px;
+  transform: translateY(0);
+  font-size: 0.68rem;
+  color: var(--color-dorado);
+  letter-spacing: 0.04em;
+}
+
+/* Input */
+.input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 20px 14px 6px;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 400;
+}
+
+.inputWithIcon  { padding-left: 42px; }
+.inputPassword  { padding-right: 44px; }
+
+/* Icono izquierda */
+.iconLeft {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Ojo contraseña */
+.eyeBtn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 4px;
+  border-radius: 4px;
+  transition: color 0.2s;
+  z-index: 2;
+}
+
+.eyeBtn:hover { color: var(--color-dorado); }
+
+/* Error */
+.errorMsg {
+  font-size: 0.75rem;
+  color: #e05252;
+  padding-left: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
