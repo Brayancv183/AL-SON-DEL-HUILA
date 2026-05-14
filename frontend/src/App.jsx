@@ -8,7 +8,7 @@ import Catalogo        from "./pages/Catalogo"
 import Mapa            from "./pages/Mapa"
 import Login           from "./pages/Login"
 import Register        from "./pages/Register"
-import Actividades     from "./pages/Actividades"
+import Actividades     from "./pages/Actividades";
 import Rutas           from "./pages/Rutas"
 import Quiz            from "./pages/Quiz"
 import Resultado       from "./pages/Resultado"

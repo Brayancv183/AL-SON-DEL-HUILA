@@ -11,7 +11,8 @@ class DestinoController extends Controller
     // GET /api/destinos
     public function index(Request $request)
     {
-        $query = Destino::with(['categoria', 'municipio', 'entorno', 'etiquetas'])
+        // Eliminamos 'etiquetas' y 'tiposViajero' (causan error 500)
+        $query = Destino::with(['categoria', 'municipio', 'entorno'])
             ->where('estado', true);
 
         // Filtro por categoría
@@ -29,13 +30,13 @@ class DestinoController extends Controller
             $query->where('municipio_id', $request->municipio);
         }
 
-        // Filtro por etiquetas
-        if ($request->has('etiquetas')) {
-            $etiquetas = explode(',', $request->etiquetas);
-            $query->whereHas('etiquetas', function($q) use ($etiquetas) {
-                $q->whereIn('etiquetas.id', $etiquetas);
-            });
-        }
+        // Filtro por etiquetas (comentado porque la tabla pivote no funciona)
+        // if ($request->has('etiquetas')) {
+        //     $etiquetas = explode(',', $request->etiquetas);
+        //     $query->whereHas('etiquetas', function($q) use ($etiquetas) {
+        //         $q->whereIn('etiquetas.id', $etiquetas);
+        //     });
+        // }
 
         // Búsqueda por texto
         if ($request->has('busqueda')) {
@@ -52,10 +53,9 @@ class DestinoController extends Controller
     // GET /api/destinos/{id}
     public function show($id)
     {
-        $destino = Destino::with([
-            'categoria', 'municipio', 'entorno',
-            'etiquetas', 'tiposViajero'
-        ])->findOrFail($id);
+        // También eliminamos 'tiposViajero' (tabla no existe) y 'etiquetas' (opcional)
+        $destino = Destino::with(['categoria', 'municipio', 'entorno'])
+            ->findOrFail($id);
 
         return response()->json($destino);
     }

@@ -5,7 +5,6 @@ import {
   PiFunnelDuotone,
   PiXDuotone,
 } from "react-icons/pi"
-import { CATEGORIAS, ENTORNOS, ETIQUETAS } from "../data/filtros"
 import styles from "./FilterSidebar.module.css"
 
 function FilterSection({ titulo, items, selected, onToggle }) {
@@ -66,26 +65,70 @@ function FilterSection({ titulo, items, selected, onToggle }) {
   )
 }
 
-export default function FilterSidebar({ filtros, onChange }) {
-  const totalActivos =
-    filtros.categorias.length +
-    filtros.entornos.length   +
-    filtros.etiquetas.length
+export default function FilterSidebar({ 
+  filtros,           // objeto con { categoria, municipio, entorno, etiquetas } (IDs)
+  onChange,          // función para actualizar filtros (recibe objeto parcial)
+  categorias = [],   // array de objetos { id, nombre }
+  municipios = [],   // array de objetos { id, nombre }
+  entornos = [],     // array de objetos { id, nombre }
+  etiquetas = []     // array de objetos { id, nombre }
+}) {
+  // Convertir los filtros actuales (backend) al formato que usa el sidebar (array de IDs por tipo)
+  const [sidebarFiltros, setSidebarFiltros] = useState({
+    categorias: filtros.categoria ? [filtros.categoria] : [],
+    municipios: filtros.municipio ? [filtros.municipio] : [],
+    entornos: filtros.entorno ? [filtros.entorno] : [],
+    etiquetas: filtros.etiquetas || [],
+  });
+
+  // Sincronizar cuando los filtros del padre cambian (por ejemplo, al limpiar desde fuera)
+  useState(() => {
+    setSidebarFiltros({
+      categorias: filtros.categoria ? [filtros.categoria] : [],
+      municipios: filtros.municipio ? [filtros.municipio] : [],
+      entornos: filtros.entorno ? [filtros.entorno] : [],
+      etiquetas: filtros.etiquetas || [],
+    });
+  }, [filtros]);
+
+  const totalActivos = 
+    sidebarFiltros.categorias.length +
+    sidebarFiltros.municipios.length +
+    sidebarFiltros.entornos.length +
+    sidebarFiltros.etiquetas.length;
 
   const toggle = (tipo, id) => {
-    const actual = filtros[tipo]
-    const nuevo  = actual.includes(id)
-      ? actual.filter(x => x !== id)
-      : [...actual, id]
-    onChange({ ...filtros, [tipo]: nuevo })
-  }
+    let nuevos;
+    if (tipo === 'categorias') {
+      // Solo se permite una categoría a la vez
+      nuevos = sidebarFiltros.categorias[0] === id ? [] : [id];
+      setSidebarFiltros(prev => ({ ...prev, categorias: nuevos }));
+      onChange({ categoria: nuevos[0] || null });
+    } else if (tipo === 'municipios') {
+      nuevos = sidebarFiltros.municipios[0] === id ? [] : [id];
+      setSidebarFiltros(prev => ({ ...prev, municipios: nuevos }));
+      onChange({ municipio: nuevos[0] || null });
+    } else if (tipo === 'entornos') {
+      nuevos = sidebarFiltros.entornos[0] === id ? [] : [id];
+      setSidebarFiltros(prev => ({ ...prev, entornos: nuevos }));
+      onChange({ entorno: nuevos[0] || null });
+    } else if (tipo === 'etiquetas') {
+      const actual = sidebarFiltros.etiquetas;
+      nuevos = actual.includes(id)
+        ? actual.filter(x => x !== id)
+        : [...actual, id];
+      setSidebarFiltros(prev => ({ ...prev, etiquetas: nuevos }));
+      onChange({ etiquetas: nuevos });
+    }
+  };
 
-  const limpiar = () =>
-    onChange({ categorias: [], entornos: [], etiquetas: [] })
+  const limpiar = () => {
+    setSidebarFiltros({ categorias: [], municipios: [], entornos: [], etiquetas: [] });
+    onChange({ categoria: null, municipio: null, entorno: null, etiquetas: [] });
+  };
 
   return (
     <aside className={styles.sidebar}>
-
       {/* Header */}
       <div className={styles.header}>
         <div className={styles.headerLeft}>
@@ -127,27 +170,25 @@ export default function FilterSidebar({ filtros, onChange }) {
             exit={{   opacity: 0, height: 0    }}
           >
             {[
-              ...filtros.categorias.map(id => ({ id, tipo: "categorias" })),
-              ...filtros.entornos.map(id   => ({ id, tipo: "entornos"   })),
-              ...filtros.etiquetas.map(id  => ({ id, tipo: "etiquetas"  })),
-            ].map(({ id, tipo }) => {
-              const item = [...CATEGORIAS, ...ENTORNOS, ...ETIQUETAS].find(x => x.id === id)
-              return item ? (
-                <motion.span
-                  key={`${tipo}-${id}`}
-                  className={styles.chip}
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1   }}
-                  exit={{   opacity: 0, scale: 0.8  }}
-                >
-                  {item.nombre}
-                  <button onClick={() => toggle(tipo, id)}>
-                    <PiXDuotone size={11} />
-                  </button>
-                </motion.span>
-              ) : null
-            })}
+              ...sidebarFiltros.categorias.map(id => ({ id, tipo: "categorias", item: categorias.find(c => c.id === id) })),
+              ...sidebarFiltros.municipios.map(id => ({ id, tipo: "municipios", item: municipios.find(m => m.id === id) })),
+              ...sidebarFiltros.entornos.map(id   => ({ id, tipo: "entornos",   item: entornos.find(e => e.id === id) })),
+              ...sidebarFiltros.etiquetas.map(id  => ({ id, tipo: "etiquetas",  item: etiquetas.find(et => et.id === id) })),
+            ].filter(({ item }) => item).map(({ id, tipo, item }) => (
+              <motion.span
+                key={`${tipo}-${id}`}
+                className={styles.chip}
+                layout
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1   }}
+                exit={{   opacity: 0, scale: 0.8  }}
+              >
+                {item.nombre}
+                <button onClick={() => toggle(tipo, id)}>
+                  <PiXDuotone size={11} />
+                </button>
+              </motion.span>
+            ))}
           </motion.div>
         )}
       </AnimatePresence>
@@ -156,24 +197,29 @@ export default function FilterSidebar({ filtros, onChange }) {
       <div className={styles.sections}>
         <FilterSection
           titulo="Categoría"
-          items={CATEGORIAS}
-          selected={filtros.categorias}
+          items={categorias}
+          selected={sidebarFiltros.categorias}
           onToggle={id => toggle("categorias", id)}
         />
         <FilterSection
+          titulo="Municipio"
+          items={municipios}
+          selected={sidebarFiltros.municipios}
+          onToggle={id => toggle("municipios", id)}
+        />
+        <FilterSection
           titulo="Entorno"
-          items={ENTORNOS}
-          selected={filtros.entornos}
+          items={entornos}
+          selected={sidebarFiltros.entornos}
           onToggle={id => toggle("entornos", id)}
         />
         <FilterSection
           titulo="Etiquetas"
-          items={ETIQUETAS}
-          selected={filtros.etiquetas}
+          items={etiquetas}
+          selected={sidebarFiltros.etiquetas}
           onToggle={id => toggle("etiquetas", id)}
         />
       </div>
-
     </aside>
   )
 }

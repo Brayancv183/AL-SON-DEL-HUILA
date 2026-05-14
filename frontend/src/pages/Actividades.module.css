@@ -1,0 +1,341 @@
+/* ========== Contenedor y header (sin cambios) ========== */
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 100px 1rem 2rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+  background: linear-gradient(135deg, #C4622D, #D4A843);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.btnCrear {
+  background: #D4A843;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.btnCrear:hover {
+  transform: scale(1.02);
+}
+
+/* ========== Feed ========== */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.post {
+  background: transparent;
+  border-radius: 16px;
+  box-shadow: none;
+  overflow: hidden;
+  border: none;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName,
+.descripcion,
+.descripcion strong,
+.actionBtn,
+.fecha,
+.ubicacion {
+  color: #fff;
+}
+
+.postTime,
+.fecha {
+  color: #aaa;
+}
+
+.ubicacionUnder {
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+.postImage {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.postActions {
+  display: flex;
+  gap: 20px;
+  padding: 8px 12px;
+  border-top: none;
+  margin-top: 0;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.actionBtn:hover {
+  color: #fff;
+}
+
+.descripcion {
+  padding: 0 12px 10px;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.fecha {
+  padding: 0 12px 12px;
+  display: block;
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+.postTimeRight {
+  font-size: 0.75rem;
+  color: #777;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+/* ========== Modal mejorado (nuevos estilos) ========== */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modalContainer {
+  background: #1a1a1a;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 540px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  border-bottom: 1px solid #333;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #aaa;
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: #fff;
+}
+
+.modalForm {
+  padding: 20px;
+}
+
+.imageUploadArea {
+  margin-bottom: 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #2a2a2a;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.uploadLabel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 32px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.uploadLabel:hover {
+  background: #333;
+}
+
+.uploadLabel input {
+  display: none;
+}
+
+.uploadIcon {
+  font-size: 48px;
+}
+
+.uploadLabel span {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.imagePreview {
+  position: relative;
+  width: 100%;
+}
+
+.imagePreview img {
+  width: 100%;
+  max-height: 300px;
+  object-fit: cover;
+}
+
+.changeImageBtn {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.8rem;
+}
+
+.formFields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.textarea,
+.input {
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: white;
+  font-family: inherit;
+  font-size: 0.9rem;
+  resize: vertical;
+}
+
+.textarea:focus,
+.input:focus {
+  outline: none;
+  border-color: #C4622D;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.cancelBtn {
+  background: transparent;
+  border: 1px solid #555;
+  color: #ccc;
+  padding: 10px 20px;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancelBtn:hover {
+  background: #333;
+}
+
+.submitBtn {
+  background: linear-gradient(135deg, #C4622D, #D4A843);
+  border: none;
+  padding: 10px 28px;
+  border-radius: 40px;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.submitBtn:hover {
+  transform: scale(1.02);
+}
+
+.submitBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== Estados de carga y vacío (sin cambios) ========== */
+.loading,
+.vacio {
+  text-align: center;
+  padding: 3rem;
+  color: #888;
+}

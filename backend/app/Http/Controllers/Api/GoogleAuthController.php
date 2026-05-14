@@ -45,17 +45,23 @@ class GoogleAuthController extends Controller
             $token = $user->createToken('google_auth')->plainTextToken;
             $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
 
-            // Construir URL con los parámetros que espera tu GoogleCallback.jsx
             $params = http_build_query([
                 'token'    => $token,
                 'id'       => $user->id,
-                'name'     => $user->nombre,   // 👈 'name' porque tu frontend espera name
+                'name'     => $user->nombre,
                 'email'    => $user->email,
                 'foto'     => $user->foto ?? '',
                 'provider' => 'google',
             ]);
 
-            return redirect($frontendUrl . '/auth/google/callback?' . $params);
+            $redirectUrl = $frontendUrl . '/auth/google/callback?' . $params;
+
+            // Redirigir mediante JavaScript en la ventana principal para evitar problemas de frame
+            return response()->make(
+                '<!DOCTYPE html><html><head><script>window.top.location.href = "'.addslashes($redirectUrl).'";</script></head><body></body></html>',
+                200,
+                ['Content-Type' => 'text/html']
+            );
 
         } catch (\Exception $e) {
             Log::error('Google OAuth error: ' . $e->getMessage());
