@@ -89,11 +89,11 @@ export default function Footer() {
             </div>
             <div className={styles.contactItem}>
               <PiEnvelopeDuotone size={15} />
-              <span>info@alsondelhuila.co</span>
+              <span>alsondelhuila@gmail.com</span>
             </div>
             <div className={styles.contactItem}>
               <PiPhoneDuotone size={15} />
-              <span>+57 300 000 0000</span>
+              <span>+57 310429730</span>
             </div>
           </div>
         </div>

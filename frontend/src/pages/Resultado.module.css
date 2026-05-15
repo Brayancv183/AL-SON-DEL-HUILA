@@ -247,6 +247,41 @@
   text-align: center;
 }
 
+.itinerarioColumn {
+  flex: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.botonesDescarga {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+}
+
+.btnDescarga {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 40px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btnDescarga:hover {
+  background: #f0f0f0;
+  border-color: #b0b0b0;
+  transform: translateY(-1px);
+}
+
+
 .mapaIcon { color: var(--color-tierra); opacity: 0.3; }
 
 .mapaPlaceholder h3 {
