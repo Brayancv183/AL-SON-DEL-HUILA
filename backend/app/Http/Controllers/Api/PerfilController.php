@@ -9,24 +9,30 @@ use Illuminate\Support\Facades\Storage;
 
 class PerfilController extends Controller
 {
-    // GET /api/perfil
+    /**
+     * Obtener los datos del perfil del usuario autenticado.
+     * GET /api/perfil
+     */
     public function show(Request $request)
     {
         $user = $request->user();
         return response()->json([
-            'id'           => $user->id,
-            'nombre'       => $user->name,
-            'email'        => $user->email,
-            'bio'          => $user->bio,
-            'ubicacion'    => $user->ubicacion,
-            'foto'         => $user->foto,
-            'foto_portada' => $user->foto_portada,
-            'provider'     => $user->provider ?? 'local',
-            'fecha_registro' => $user->created_at,
+            'id'            => $user->id,
+            'nombre'        => $user->nombre,
+            'email'         => $user->email,
+            'bio'           => $user->bio,
+            'ubicacion'     => $user->ubicacion_texto,
+            'foto'          => $user->foto,
+            'foto_portada'  => $user->foto_portada,
+            'provider'      => $user->provider ?? 'local',
+            'fecha_registro'=> $user->created_at,
         ]);
     }
 
-    // PUT /api/perfil
+    /**
+     * Actualizar la información del perfil.
+     * PUT /api/perfil
+     */
     public function update(Request $request)
     {
         $request->validate([
@@ -36,18 +42,27 @@ class PerfilController extends Controller
         ]);
 
         $user = $request->user();
-        $user->name      = $request->nombre    ?? $user->name;
-        $user->bio       = $request->bio       ?? $user->bio;
-        $user->ubicacion = $request->ubicacion ?? $user->ubicacion;
+        $user->nombre = $request->nombre ?? $user->nombre;
+        $user->bio = $request->bio ?? $user->bio;
+        $user->ubicacion_texto = $request->ubicacion ?? $user->ubicacion_texto;
         $user->save();
 
         return response()->json([
-            'message' => 'Perfil actualizado',
-            'user'    => $user
+            'id'            => $user->id,
+            'nombre'        => $user->nombre,
+            'email'         => $user->email,
+            'bio'           => $user->bio,
+            'ubicacion'     => $user->ubicacion_texto,
+            'foto'          => $user->foto,
+            'foto_portada'  => $user->foto_portada,
+            'provider'      => $user->provider,
         ]);
     }
 
-    // POST /api/perfil/foto
+    /**
+     * Subir foto de perfil o portada.
+     * POST /api/perfil/foto
+     */
     public function subirFoto(Request $request)
     {
         $request->validate([
@@ -57,7 +72,7 @@ class PerfilController extends Controller
 
         $user = $request->user();
         $path = $request->file('foto')->store('fotos', 'public');
-        $url  = asset('storage/' . $path);
+        $url = asset('storage/' . $path);   // URL pública completa
 
         if ($request->tipo === 'portada') {
             $user->foto_portada = $url;
@@ -72,7 +87,10 @@ class PerfilController extends Controller
         ]);
     }
 
-    // PUT /api/perfil/password
+    /**
+     * Cambiar contraseña (solo para cuentas con email).
+     * PUT /api/perfil/password
+     */
     public function cambiarPassword(Request $request)
     {
         $request->validate([
@@ -81,7 +99,6 @@ class PerfilController extends Controller
         ]);
 
         $user = $request->user();
-
         if (!Hash::check($request->password_actual, $user->password)) {
             return response()->json([
                 'message' => 'La contraseña actual es incorrecta'
@@ -94,10 +111,13 @@ class PerfilController extends Controller
         return response()->json(['message' => 'Contraseña actualizada']);
     }
 
-    // GET /api/perfil/favoritos
+    /**
+     * Listar favoritos (pendiente de implementación).
+     * GET /api/perfil/favoritos
+     */
     public function favoritos(Request $request)
     {
-        // Próximamente cuando conectemos favoritos
+        // Devuelve un array vacío por ahora
         return response()->json([]);
     }
 }

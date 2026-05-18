@@ -40,6 +40,9 @@ Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/perfil', [PerfilController::class, 'show']);
+    Route::put('/perfil', [PerfilController::class, 'update']);
+    Route::post('/perfil/foto', [PerfilController::class, 'subirFoto']);
+    Route::put('/perfil/password', [PerfilController::class, 'cambiarPassword']);
     Route::post('/publicaciones', [PublicacionController::class, 'store']);
     Route::post('/publicaciones/{id}/like', [PublicacionController::class, 'like']);
     Route::post('/rutas', [RutaController::class, 'store'])->middleware('auth:sanctum');

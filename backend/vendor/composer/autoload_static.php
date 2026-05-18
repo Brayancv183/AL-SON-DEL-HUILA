@@ -567,6 +567,7 @@ class ComposerStaticInitc57754c93ae34ac3b9b716a0fd2f2149
         'App\\Models\\Municipio' => __DIR__ . '/../..' . '/app/Models/Municipio.php',
         'App\\Models\\Publicacion' => __DIR__ . '/../..' . '/app/Models/Publicacion.php',
         'App\\Models\\PublicacionLike' => __DIR__ . '/../..' . '/app/Models/PublicacionLike.php',
+        'App\\Models\\Ruta' => __DIR__ . '/../..' . '/app/Models/Ruta.php',
         'App\\Models\\TipoViajero' => __DIR__ . '/../..' . '/app/Models/TipoViajero.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Models\\Usuario' => __DIR__ . '/../..' . '/app/Models/Usuario.php',

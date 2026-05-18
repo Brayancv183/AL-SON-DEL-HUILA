@@ -103,12 +103,14 @@ export default function Navbar() {
         <div className={styles.auth}>
           {isAuthenticated ? (
             <>
-              <div className={styles.userInfo}>
-                <PiUserDuotone size={18} />
-                <span className={styles.userName}>
-                  {getDisplayName()}
-                </span>
-              </div>
+              <Link to="/perfil" className={styles.userInfoLink}>
+                <div className={styles.userInfo}>
+                  <PiUserDuotone size={18} />
+                  <span className={styles.userName}>
+                    {getDisplayName()}
+                  </span>
+                </div>
+              </Link>
               <motion.button
                 whileHover={{ scale: 1.04 }}
                 whileTap={{ scale: 0.97 }}

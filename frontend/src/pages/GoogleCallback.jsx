@@ -5,9 +5,11 @@ export default function GoogleCallback() {
   const [params] = useSearchParams();
 
   useEffect(() => {
-    // Evitar bucle si ya hay token (redirige directamente)
+    // Si ya hay token, redirigir a la página guardada (o al inicio)
     if (localStorage.getItem("token")) {
-      window.location.href = "/perfil";
+      const redirectPath = localStorage.getItem("redirectAfterGoogle") || "/";
+      localStorage.removeItem("redirectAfterGoogle");
+      window.location.href = redirectPath;
       return;
     }
 
@@ -20,6 +22,8 @@ export default function GoogleCallback() {
     const error = params.get("error");
 
     if (error || !token || !id) {
+      // Si hay error, también limpiamos la redirección pendiente
+      localStorage.removeItem("redirectAfterGoogle");
       window.location.href = "/login?error=google_failed";
       return;
     }
@@ -43,8 +47,12 @@ export default function GoogleCallback() {
     localStorage.setItem("user", JSON.stringify(userData));
     localStorage.removeItem("usuario");
 
-    // Redirigir al perfil (esto recarga la página una sola vez)
-    window.location.href = "/perfil";
+    // Obtener la ruta guardada antes de redirigir a Google
+    const redirectPath = localStorage.getItem("redirectAfterGoogle") || "/";
+    localStorage.removeItem("redirectAfterGoogle");
+
+    // Redirigir a la página original (no al perfil)
+    window.location.href = redirectPath;
   }, []);
 
   return <div>Iniciando sesión con Google...</div>;

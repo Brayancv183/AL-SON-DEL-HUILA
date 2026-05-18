@@ -34,6 +34,7 @@ export default function Login() {
   }
 
   const handleGoogle = () => {
+    localStorage.setItem('redirectAfterGoogle', window.location.pathname + window.location.search);
     window.location.href = "http://localhost:8000/api/auth/google"
   }
 

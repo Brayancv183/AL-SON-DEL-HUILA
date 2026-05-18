@@ -43,14 +43,17 @@ export async function subirFoto(file, tipo = 'perfil') {
 // PUT /api/perfil/password
 export async function cambiarPassword(passwordActual, passwordNuevo) {
   const res = await fetch(`${API_URL}/perfil/password`, {
-    method:  'PUT',
+    method: 'PUT',
     headers: authHeader(),
-    body:    JSON.stringify({
-      password_actual:          passwordActual,
-      password_nuevo:           passwordNuevo,
+    body: JSON.stringify({
+      password_actual: passwordActual,
+      password_nuevo: passwordNuevo,
       password_nuevo_confirmation: passwordNuevo
     })
-  })
-  if (!res.ok) throw new Error('Error al cambiar contraseña')
-  return res.json()
+  });
+  if (!res.ok) {
+    const err = await res.json();
+    throw new Error(err.message || 'Error al cambiar contraseña');
+  }
+  return res.json();
 }

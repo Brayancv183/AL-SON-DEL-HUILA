@@ -24,6 +24,7 @@ return array(
     'App\\Models\\Municipio' => $baseDir . '/app/Models/Municipio.php',
     'App\\Models\\Publicacion' => $baseDir . '/app/Models/Publicacion.php',
     'App\\Models\\PublicacionLike' => $baseDir . '/app/Models/PublicacionLike.php',
+    'App\\Models\\Ruta' => $baseDir . '/app/Models/Ruta.php',
     'App\\Models\\TipoViajero' => $baseDir . '/app/Models/TipoViajero.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Usuario' => $baseDir . '/app/Models/Usuario.php',

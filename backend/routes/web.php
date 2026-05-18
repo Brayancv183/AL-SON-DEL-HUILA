@@ -17,3 +17,13 @@ Route::get('/imagenes/publicaciones/{filename}', function ($filename) {
     
     return response()->file($path);
 })->where('filename', '.*');
+
+
+// Ruta para servir fotos de perfil/portada sin depender del enlace simbólico
+Route::get('/storage/fotos/{filename}', function ($filename) {
+    $path = storage_path('app/public/fotos/' . $filename);
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    return response()->file($path);
+})->where('filename', '.*');
