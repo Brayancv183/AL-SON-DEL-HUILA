@@ -509,15 +509,137 @@
   background: rgba(224,82,82,0.15);
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .infoGrid  { grid-template-columns: 1fr; }
-  .formGrid  { grid-template-columns: 1fr; }
-  .userRow   { flex-direction: column; align-items: flex-start; }
-  .acciones  { margin-top: 0; }
+/* ========== ESTILOS PARA MIS PUBLICACIONES (Feed estilo Actividades) ========== */
+.feed {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-/* Modal para cambio de contraseña */
+.post {
+  background: transparent;
+  border-radius: 16px;
+  box-shadow: none;
+  overflow: hidden;
+  border: none;
+}
+
+.postHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  flex-wrap: wrap;
+}
+
+.userInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.userName {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #fff;
+}
+
+.ubicacionUnder {
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+.postTimeRight {
+  font-size: 0.75rem;
+  color: #777;
+  white-space: nowrap;
+  margin-left: auto;
+}
+
+.postImage {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.postActions {
+  display: flex;
+  gap: 20px;
+  padding: 8px 12px;
+  border-top: none;
+  margin-top: 0;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #ccc;
+  transition: 0.2s;
+}
+
+.actionBtn:hover {
+  color: #fff;
+}
+
+.descripcion {
+  padding: 0 12px 10px;
+  margin: 0;
+  font-size: 0.85rem;
+  color: #fff;
+}
+
+.fecha {
+  padding: 0 12px 12px;
+  display: block;
+  font-size: 0.7rem;
+  color: #aaa;
+}
+
+/* Botones de editar/eliminar (opcionales) */
+.publicacionAcciones {
+  display: flex;
+  gap: 12px;
+  padding: 8px 12px 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.editPostBtn, .deletePostBtn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.editPostBtn {
+  color: var(--color-dorado);
+}
+
+.editPostBtn:hover {
+  background: rgba(212,168,67,0.1);
+}
+
+.deletePostBtn {
+  color: #e05252;
+}
+
+.deletePostBtn:hover {
+  background: rgba(224,82,82,0.1);
+}
+
+/* Modal cambio de contraseña */
 .modalOverlay {
   position: fixed;
   top: 0;
@@ -635,4 +757,12 @@
   background: linear-gradient(135deg, #C4622D, #D4A843);
   color: white;
   font-weight: bold;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .infoGrid  { grid-template-columns: 1fr; }
+  .formGrid  { grid-template-columns: 1fr; }
+  .userRow   { flex-direction: column; align-items: flex-start; }
+  .acciones  { margin-top: 0; }
 }

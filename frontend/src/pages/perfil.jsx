@@ -11,11 +11,34 @@ import {
   PiXDuotone,
   PiLockDuotone,
   PiSignOutDuotone,
+  PiTrashDuotone,
 } from "react-icons/pi";
 import { useAuth } from "../context/AuthContext";
 import { getPerfil, updatePerfil, subirFoto, cambiarPassword } from "../api/perfil";
+import { getMisPublicaciones, updatePublicacion, deletePublicacion } from "../api/publicaciones";
 import { useNavigate } from "react-router-dom";
 import styles from "./Perfil.module.css";
+
+// Función para calcular tiempo relativo (mismo que en Actividades)
+function timeAgo(date) {
+  const now = new Date();
+  const diff = Math.floor((now - new Date(date)) / 1000);
+  const intervals = [
+    { label: 'año', seconds: 31536000 },
+    { label: 'mes', seconds: 2592000 },
+    { label: 'día', seconds: 86400 },
+    { label: 'hora', seconds: 3600 },
+    { label: 'minuto', seconds: 60 },
+    { label: 'segundo', seconds: 1 }
+  ];
+  for (const interval of intervals) {
+    const count = Math.floor(diff / interval.seconds);
+    if (count >= 1) {
+      return `hace ${count} ${interval.label}${count !== 1 ? 's' : ''}`;
+    }
+  }
+  return 'hace un momento';
+}
 
 export default function Perfil() {
   const { logout } = useAuth();
@@ -29,7 +52,9 @@ export default function Perfil() {
   const [form, setForm] = useState({ nombre: "", bio: "", ubicacion: "" });
   const [mensaje, setMensaje] = useState(null);
 
-  // Estados para el modal de cambio de contraseña
+  const [misPublicaciones, setMisPublicaciones] = useState([]);
+  const [cargandoPublicaciones, setCargandoPublicaciones] = useState(false);
+  const [editandoPost, setEditandoPost] = useState(null);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [passwordActual, setPasswordActual] = useState("");
   const [passwordNuevo, setPasswordNuevo] = useState("");
@@ -45,6 +70,12 @@ export default function Perfil() {
     cargarPerfil();
   }, []);
 
+  useEffect(() => {
+    if (tabActiva === "mis-publicaciones") {
+      cargarMisPublicaciones();
+    }
+  }, [tabActiva]);
+
   const cargarPerfil = async () => {
     try {
       const data = await getPerfil();
@@ -55,9 +86,24 @@ export default function Perfil() {
         ubicacion: data.ubicacion || "",
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error cargando perfil:", err);
+      mostrarMensaje("❌ Error al cargar perfil");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const cargarMisPublicaciones = async () => {
+    setCargandoPublicaciones(true);
+    try {
+      const data = await getMisPublicaciones();
+      setMisPublicaciones(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error("Error cargando mis publicaciones:", err);
+      mostrarMensaje("❌ Error al cargar tus publicaciones");
+      setMisPublicaciones([]);
+    } finally {
+      setCargandoPublicaciones(false);
     }
   };
 
@@ -97,12 +143,54 @@ export default function Perfil() {
     navigate("/");
   };
 
-  // Manejo del cambio de contraseña
+  const iniciarEdicionPost = (pub) => {
+    setEditandoPost({
+      id: pub.id,
+      descripcion: pub.descripcion || "",
+      ubicacion: pub.ubicacion || "",
+    });
+  };
+
+  const cancelarEdicionPost = () => {
+    setEditandoPost(null);
+  };
+
+  const guardarEdicionPost = async () => {
+    if (!editandoPost) return;
+    try {
+      await updatePublicacion(editandoPost.id, {
+        descripcion: editandoPost.descripcion,
+        ubicacion: editandoPost.ubicacion,
+      });
+      setMisPublicaciones(prev =>
+        prev.map(p =>
+          p.id === editandoPost.id
+            ? { ...p, descripcion: editandoPost.descripcion, ubicacion: editandoPost.ubicacion }
+            : p
+        )
+      );
+      setEditandoPost(null);
+      mostrarMensaje("✅ Publicación actualizada");
+    } catch (err) {
+      mostrarMensaje("❌ Error al actualizar: " + err.message);
+    }
+  };
+
+  const eliminarPublicacion = async (id) => {
+    if (!window.confirm("¿Estás seguro de que quieres eliminar esta publicación?")) return;
+    try {
+      await deletePublicacion(id);
+      setMisPublicaciones(prev => prev.filter(p => p.id !== id));
+      mostrarMensaje("🗑️ Publicación eliminada");
+    } catch (err) {
+      mostrarMensaje("❌ Error al eliminar: " + err.message);
+    }
+  };
+
   const handleCambiarPassword = async (e) => {
     e.preventDefault();
     setPasswordError("");
     setPasswordSuccess("");
-
     if (passwordNuevo !== passwordNuevoConfirmation) {
       setPasswordError("Las contraseñas nuevas no coinciden");
       return;
@@ -111,12 +199,10 @@ export default function Perfil() {
       setPasswordError("La contraseña debe tener al menos 8 caracteres");
       return;
     }
-
     setCambiando(true);
     try {
       await cambiarPassword(passwordActual, passwordNuevo);
       setPasswordSuccess("Contraseña actualizada correctamente");
-      // Limpiar campos y cerrar modal después de 2 segundos
       setTimeout(() => {
         setShowPasswordModal(false);
         setPasswordActual("");
@@ -137,6 +223,7 @@ export default function Perfil() {
 
   const TABS = [
     { id: "info", label: "Mi información" },
+    { id: "mis-publicaciones", label: "Mis publicaciones" },
     { id: "seguridad", label: "Seguridad" },
   ];
 
@@ -198,7 +285,6 @@ export default function Perfil() {
 
         {mensaje && <div className={styles.mensaje}>{mensaje}</div>}
 
-        {/* Formulario de edición */}
         <AnimatePresence>
           {editando && (
             <motion.div className={styles.formEdicion} initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }}>
@@ -226,10 +312,13 @@ export default function Perfil() {
           )}
         </AnimatePresence>
 
-        {/* Tabs */}
         <div className={styles.tabs}>
           {TABS.map(tab => (
-            <button key={tab.id} className={`${styles.tab} ${tabActiva === tab.id ? styles.tabActiva : ""}`} onClick={() => setTabActiva(tab.id)}>
+            <button
+              key={tab.id}
+              className={`${styles.tab} ${tabActiva === tab.id ? styles.tabActiva : ""}`}
+              onClick={() => setTabActiva(tab.id)}
+            >
               {tab.label}
               {tabActiva === tab.id && <motion.div className={styles.tabIndicator} layoutId="tabIndicator" />}
             </button>
@@ -237,7 +326,6 @@ export default function Perfil() {
         </div>
 
         <div className={styles.tabContent}>
-          {/* Info */}
           {tabActiva === "info" && (
             <div className={styles.infoGrid}>
               <div className={styles.infoCard}>
@@ -259,7 +347,78 @@ export default function Perfil() {
             </div>
           )}
 
-          {/* Seguridad */}
+          {tabActiva === "mis-publicaciones" && (
+            <div className={styles.misPublicacionesContainer}>
+              {cargandoPublicaciones ? (
+                <div className={styles.loading}>Cargando tus publicaciones...</div>
+              ) : misPublicaciones.length === 0 ? (
+                <div className={styles.emptyState}>
+                  <PiHeartDuotone size={40} className={styles.emptyIcon} />
+                  <h3>Aún no has publicado nada</h3>
+                  <p>Comparte tu primera experiencia en la sección Actividades</p>
+                  <button onClick={() => navigate("/actividades")} className={styles.btnExplorar}>
+                    Ir a Actividades
+                  </button>
+                </div>
+              ) : (
+                <div className={styles.feed}>
+                  {misPublicaciones.map(pub => (
+                    <div key={pub.id} className={styles.post}>
+                      <div className={styles.postHeader}>
+                        <img
+                          src={pub.user?.foto || `https://ui-avatars.com/api/?name=${encodeURIComponent(pub.user?.nombre || 'U')}&background=random`}
+                          alt="avatar"
+                          className={styles.avatar}
+                        />
+                        <div className={styles.userInfo}>
+                          <strong className={styles.userName}>{pub.user?.nombre || 'Usuario'}</strong>
+                          {pub.ubicacion && <span className={styles.ubicacionUnder}>📍 {pub.ubicacion}</span>}
+                        </div>
+                        <span className={styles.postTimeRight}>{timeAgo(pub.created_at)}</span>
+                      </div>
+
+                      <img src={pub.imagen} alt="publicación" className={styles.postImage} />
+
+                      <div className={styles.postActions}>
+                        <button className={styles.actionBtn}>
+                          ❤️ {pub.likes}
+                        </button>
+                        {/* Botón de comentarios (opcional, descomentar si lo tienes) */}
+                        {/* <button className={styles.actionBtn}>💬 {pub.comentarios_count || 0}</button> */}
+                      </div>
+
+                      {pub.descripcion && (
+                        <p className={styles.descripcion}>
+                          <strong>{pub.user?.nombre || 'Usuario'}</strong> {pub.descripcion}
+                        </p>
+                      )}
+
+                      <small className={styles.fecha}>
+                        {new Date(pub.created_at).toLocaleDateString('es-CO', {
+                          year: 'numeric',
+                          month: 'long',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </small>
+
+                      {/* Botones de editar/eliminar (opcional, manténlos si los quieres) */}
+                      <div className={styles.publicacionAcciones}>
+                        <button onClick={() => iniciarEdicionPost(pub)} className={styles.editPostBtn}>
+                          <PiPencilDuotone size={16} /> Editar
+                        </button>
+                        <button onClick={() => eliminarPublicacion(pub.id)} className={styles.deletePostBtn}>
+                          <PiTrashDuotone size={16} /> Eliminar
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
           {tabActiva === "seguridad" && (
             <div className={styles.seguridadSection}>
               <div className={styles.seguridadCard}>
@@ -285,7 +444,7 @@ export default function Perfil() {
         </div>
       </div>
 
-      {/* Modal para cambiar contraseña */}
+      {/* Modal cambio de contraseña */}
       {showPasswordModal && (
         <div className={styles.modalOverlay} onClick={() => setShowPasswordModal(false)}>
           <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>

@@ -45,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/perfil/password', [PerfilController::class, 'cambiarPassword']);
     Route::post('/publicaciones', [PublicacionController::class, 'store']);
     Route::post('/publicaciones/{id}/like', [PublicacionController::class, 'like']);
+    Route::put('/publicaciones/{id}', [PublicacionController::class, 'update']);
+    Route::delete('/publicaciones/{id}', [PublicacionController::class, 'destroy']);
+    Route::get('/perfil/mis-publicaciones', [PublicacionController::class, 'misPublicaciones']);    
     Route::post('/rutas', [RutaController::class, 'store'])->middleware('auth:sanctum');
     Route::delete('/rutas/{id}', [RutaController::class, 'destroy'])->middleware('auth:sanctum');
     });

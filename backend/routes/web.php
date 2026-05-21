@@ -27,3 +27,9 @@ Route::get('/storage/fotos/{filename}', function ($filename) {
     }
     return response()->file($path);
 })->where('filename', '.*');
+
+Route::get('/storage/publicaciones/{filename}', function ($filename) {
+    $path = storage_path('app/public/publicaciones/' . $filename);
+    if (!file_exists($path)) abort(404);
+    return response()->file($path);
+})->where('filename', '.*');
