@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://github.com/Brayancv183/AL-SON-DEL-HUILA/blob/main/Logo/logo.png?raw=true" alt="Al Son del Huila Logo" width="180" />
+<img src="Logo/logo .jpeg" alt="Al Son del Huila Logo" width="180" />
 
 # 🎡 Al Son del Huila
 
