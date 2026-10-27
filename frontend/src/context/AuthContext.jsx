@@ -4,6 +4,7 @@ import api from "../services/api";
 const AuthContext = createContext(null);
 
 // Hook personalizado para usar el contexto (exportamos 'useAuth' para consistencia)
+// eslint-disable-next-line react-refresh/only-export-components
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -35,12 +36,14 @@ export const AuthProvider = ({ children }) => {
 
   // Al cargar la app, si hay token, pedir los datos del usuario
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      refreshUser().finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    let cancelled = false;
+    const init = async () => {
+      const token = localStorage.getItem("token");
+      if (token) await refreshUser();
+      if (!cancelled) setLoading(false);
+    };
+    init();
+    return () => { cancelled = true; };
   }, []);
 
   // Registro normal (email + password)

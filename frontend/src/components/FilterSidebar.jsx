@@ -74,22 +74,25 @@ export default function FilterSidebar({
   etiquetas = []     // array de objetos { id, nombre }
 }) {
   // Convertir los filtros actuales (backend) al formato que usa el sidebar (array de IDs por tipo)
-  const [sidebarFiltros, setSidebarFiltros] = useState({
+  const [sidebarFiltros, setSidebarFiltros] = useState(() => ({
     categorias: filtros.categoria ? [filtros.categoria] : [],
     municipios: filtros.municipio ? [filtros.municipio] : [],
     entornos: filtros.entorno ? [filtros.entorno] : [],
     etiquetas: filtros.etiquetas || [],
-  });
+  }));
 
   // Sincronizar cuando los filtros del padre cambian (por ejemplo, al limpiar desde fuera)
-  useState(() => {
+  // Patrón "adjust state during render" en lugar de useEffect (evita renders en cascada)
+  const [filtrosPrevios, setFiltrosPrevios] = useState(filtros);
+  if (filtrosPrevios !== filtros) {
+    setFiltrosPrevios(filtros);
     setSidebarFiltros({
       categorias: filtros.categoria ? [filtros.categoria] : [],
       municipios: filtros.municipio ? [filtros.municipio] : [],
       entornos: filtros.entorno ? [filtros.entorno] : [],
       etiquetas: filtros.etiquetas || [],
     });
-  }, [filtros]);
+  }
 
   const totalActivos = 
     sidebarFiltros.categorias.length +

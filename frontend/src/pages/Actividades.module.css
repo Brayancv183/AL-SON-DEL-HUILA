@@ -291,6 +291,53 @@
   border-color: #C4622D;
 }
 
+/* Sugerencia de lugar detectado por Huily */
+.lugarDetectando {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.8rem;
+  color: #b0b0b0;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: rgba(196, 98, 45, 0.08);
+  border-radius: 8px;
+}
+
+.lugarSugerido {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #e0e0e0;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  background: rgba(196, 98, 45, 0.15);
+  border: 1px solid rgba(196, 98, 45, 0.4);
+  border-radius: 10px;
+}
+
+.lugarSugerido strong {
+  color: #d4a843;
+}
+
+.btnUsarLugar {
+  background: linear-gradient(135deg, #C4622D, #D4A843);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.btnUsarLugar:hover {
+  filter: brightness(1.1);
+}
+
 .modalActions {
   display: flex;
   justify-content: flex-end;
@@ -385,4 +432,64 @@
 /* Corazón rojo para el like */
 .heartRed {
   color: #e74c3c;
+}
+/* ===== Huily IA en el modal de publicación ===== */
+.iaRow {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btnCaption {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(196, 98, 45, 0.15);
+  border: 1px solid rgba(196, 98, 45, 0.4);
+  color: #d4a843;
+  border-radius: 20px;
+  padding: 6px 14px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btnCaption:hover:not(:disabled) {
+  background: rgba(196, 98, 45, 0.28);
+}
+
+.btnCaption:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
+.tagsSugeridas {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 0.78rem;
+}
+
+.tagsLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #b0b0b0;
+}
+
+.tagChip {
+  background: transparent;
+  border: 1px solid rgba(212, 168, 67, 0.5);
+  color: #d4a843;
+  border-radius: 20px;
+  padding: 3px 10px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tagChip:hover {
+  background: rgba(196, 98, 45, 0.2);
 }

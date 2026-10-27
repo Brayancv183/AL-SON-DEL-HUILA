@@ -19,7 +19,7 @@ import { getPerfil, updatePerfil, subirFoto, cambiarPassword } from "../api/perf
 import { getMisPublicaciones, updatePublicacion, deletePublicacion } from "../api/publicaciones";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
-import styles from "./Perfil.module.css";
+import styles from "./perfil.module.css";
 
 function timeAgo(date) {
   const now = new Date();
@@ -42,7 +42,7 @@ function timeAgo(date) {
 }
 
 export default function Perfil() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   const [perfil, setPerfil] = useState(null);
@@ -435,6 +435,32 @@ export default function Perfil() {
                           minute: '2-digit'
                         })}
                       </small>
+
+                      {/* Editor inline de publicación */}
+                      {editandoPost?.id === pub.id && (
+                        <div className={styles.editPostForm}>
+                          <textarea
+                            value={editandoPost.descripcion}
+                            onChange={e => setEditandoPost(prev => ({ ...prev, descripcion: e.target.value }))}
+                            rows={3}
+                            placeholder="Descripción"
+                          />
+                          <input
+                            type="text"
+                            value={editandoPost.ubicacion}
+                            onChange={e => setEditandoPost(prev => ({ ...prev, ubicacion: e.target.value }))}
+                            placeholder="Ubicación"
+                          />
+                          <div className={styles.editPostActions}>
+                            <button onClick={guardarEdicionPost} className={styles.savePostBtn}>
+                              Guardar
+                            </button>
+                            <button onClick={cancelarEdicionPost} className={styles.cancelPostBtn}>
+                              Cancelar
+                            </button>
+                          </div>
+                        </div>
+                      )}
 
                       {/* Botones de editar/eliminar (solo en perfil) */}
                       <div className={styles.publicacionAcciones}>

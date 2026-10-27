@@ -1,0 +1,38 @@
+# ===== Dependencias =====
+node_modules/
+vendor/
+
+# ===== Build =====
+frontend/dist/
+frontend/build/
+backend/public/build/
+
+# ===== Secretos (NUNCA subir) =====
+.env
+.env.*
+!.env.example
+frontend/.env
+backend/.env
+
+# ===== Logs =====
+*.log
+npm-debug.log*
+
+# ===== Sistema =====
+.DS_Store
+Thumbs.db
+
+# ===== IDE =====
+.vscode/
+.idea/
+
+# ===== Laravel =====
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/views/*
+backend/storage/logs/*.log
+backend/bootstrap/cache/*.php
+!backend/bootstrap/cache/.gitignore
+
+# ===== Vite =====
+frontend/.vite/

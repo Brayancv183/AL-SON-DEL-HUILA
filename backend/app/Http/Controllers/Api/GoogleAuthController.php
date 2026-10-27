@@ -43,7 +43,7 @@ class GoogleAuthController extends Controller
             }
 
             $token = $user->createToken('google_auth')->plainTextToken;
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+            $frontendUrl = config('services.frontend_url', env('FRONTEND_URL', 'http://localhost:5173'));
 
             $params = http_build_query([
                 'token'    => $token,
@@ -65,7 +65,7 @@ class GoogleAuthController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Google OAuth error: ' . $e->getMessage());
-            $frontendUrl = env('FRONTEND_URL', 'http://localhost:3000');
+            $frontendUrl = config('services.frontend_url', env('FRONTEND_URL', 'http://localhost:5173'));
             return redirect($frontendUrl . '/login?error=google_failed');
         }
     }

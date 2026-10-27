@@ -23,9 +23,9 @@ export default function Mapa({ destinos }) {
       const lng = primerDestino.longitud ? parseFloat(primerDestino.longitud) : -75.2818;
       
       const map = L.map('mapa').setView([lat, lng], 9);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; CartoDB',
-        subdomains: 'abcd',
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: ['a', 'b', 'c'],
         maxZoom: 19,
       }).addTo(map);
       mapRef.current = map;
@@ -45,7 +45,7 @@ export default function Mapa({ destinos }) {
         const lat = parseFloat(destino.latitud);
         const lng = parseFloat(destino.longitud);
         if (!isNaN(lat) && !isNaN(lng)) {
-          const marker = L.marker([lat, lng])
+          L.marker([lat, lng])
             .bindPopup(`<b>${destino.nombre}</b><br>${destino.municipio || ''}<br>${destino.categoria || ''}`)
             .addTo(mapRef.current);
           bounds.push([lat, lng]);

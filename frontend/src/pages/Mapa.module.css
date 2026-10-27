@@ -1,0 +1,28 @@
+.page {
+  width: 100%;
+  height: calc(100vh - 70px);
+  padding: 0;
+}
+
+.estado {
+  min-height: calc(100vh - 70px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: var(--text-muted, #9aa0a6);
+}
+
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(212, 168, 67, 0.2);
+  border-top-color: #d4a843;
+  border-radius: 50%;
+  animation: girar 0.8s linear infinite;
+}
+
+@keyframes girar {
+  to { transform: rotate(360deg); }
+}

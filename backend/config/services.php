@@ -40,8 +40,14 @@ return [
     'client_secret' => env('GOOGLE_CLIENT_SECRET'),
     'redirect'      => env('GOOGLE_REDIRECT'),
     'guzzle' => [
-        'verify' => false,  // Desactiva verificación SSL (solo desarrollo)
+        'verify' => env('GOOGLE_SSL_VERIFY', false),
     ],
     ],
+
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+    ],
+
+    'frontend_url' => env('FRONTEND_URL', 'http://localhost:5173'),
 
 ];

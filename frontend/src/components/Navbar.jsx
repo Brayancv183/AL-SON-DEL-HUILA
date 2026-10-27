@@ -22,7 +22,7 @@ const LINKS = [
   { to: "/",            label: "Inicio",      Icon: PiHouseDuotone     },
   { to: "/catalogo",    label: "Destinos",    Icon: PiMapPinDuotone    },
   { to: "/actividades", label: "Actividades", Icon: PiLightningDuotone },
-  { to: "/Rutas",       label: "Huily",       Icon: PiBrainDuotone     },
+  { to: "/rutas",       label: "Huily",       Icon: PiBrainDuotone     },
 ]
 
 export default function Navbar() {
@@ -49,7 +49,7 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", fn)
   }, [])
 
-  useEffect(() => { setMenuOpen(false) }, [location])
+  const cerrarMenu = () => setMenuOpen(false)
 
   const handleLogout = () => {
     logout()
@@ -166,7 +166,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, x: 0   }}
                 transition={{ delay: i * 0.07  }}
               >
-                <Link to={to} className={styles.mobileLink}>
+                <Link to={to} className={styles.mobileLink} onClick={cerrarMenu}>
                   <Icon size={18} />
                   {label}
                 </Link>
@@ -185,10 +185,10 @@ export default function Navbar() {
               </>
             ) : (
               <>
-                <Link to="/login" className={styles.mobileBtnLogin}>
+                <Link to="/login" className={styles.mobileBtnLogin} onClick={cerrarMenu}>
                   <PiSignInDuotone size={18} /> Ingresar
                 </Link>
-                <Link to="/register" className={styles.mobileBtnRegistro}>
+                <Link to="/register" className={styles.mobileBtnRegistro} onClick={cerrarMenu}>
                   <PiUserPlusDuotone size={18} /> Registrarse
                 </Link>
               </>

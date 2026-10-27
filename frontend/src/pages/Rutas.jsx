@@ -8,6 +8,7 @@ import {
 } from "react-icons/pi"
 import { useAuth }    from "../context/AuthContext"
 import { getRutas, crearRuta, eliminarRuta } from "../api/rutas"
+import { API_URL }    from "../api/config"
 import HistorialRutas        from "../components/HistorialRutas"
 import ChatRutas             from "../components/ChatRutas"
 import MapaRutas             from "../components/MapaRutas"
@@ -35,7 +36,7 @@ export default function Rutas() {
     const cargar = async () => {
       try {
         const [resDestinos, resRutas] = await Promise.all([
-          fetch("http://127.0.0.1:8000/api/destinos").then(r => r.json()),
+          fetch(`${API_URL}/destinos`).then(r => r.json()),
           getRutas().catch(() => [])
         ])
         setTodosDestinos(resDestinos)

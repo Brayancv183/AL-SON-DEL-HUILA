@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PiCookieDuotone, PiGearDuotone } from 'react-icons/pi';
 import CookieModal from './CookieModal';
@@ -6,13 +6,8 @@ import { useCookie } from '../context/CookieContext';
 import styles from './CookieBanner.module.css';
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(() => !localStorage.getItem('cookieConsent'));
   const { modalOpen, openCookieModal, closeCookieModal } = useCookie();
-
-  useEffect(() => {
-    const consent = localStorage.getItem('cookieConsent');
-    if (!consent) setVisible(true);
-  }, []);
 
   const acceptAll = () => {
     localStorage.setItem('cookieConsent', JSON.stringify({ necessary: true, analytics: true, marketing: true, accepted: true, date: new Date().toISOString() }));

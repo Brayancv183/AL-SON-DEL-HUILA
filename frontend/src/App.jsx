@@ -5,7 +5,7 @@ import CustomCursor    from "./components/CustomCursor"
 import ProtectedRoute  from "./components/ProtectedRoute"
 import Home            from "./pages/Home"
 import Catalogo        from "./pages/Catalogo"
-import Mapa from "./pages/Mapa";
+import MapaPage        from "./pages/MapaPage"
 import Login           from "./pages/Login"
 import Register        from "./pages/Register"
 import Actividades     from "./pages/Actividades";
@@ -14,7 +14,7 @@ import Quiz            from "./pages/Quiz"
 import Resultado       from "./pages/Resultado"
 import Privacidad      from "./pages/Privacidad"
 import Terminos        from "./pages/Terminos"
-import Perfil          from "./pages/Perfil"
+import Perfil          from "./pages/perfil"
 import GoogleCallback from "./pages/GoogleCallback"
 
 function App() {
@@ -25,7 +25,7 @@ function App() {
       <Routes>
         <Route path="/"            element={<Home />}       />
         <Route path="/catalogo"    element={<Catalogo />}   />
-        <Route path="/mapa"        element={<Mapa />}       />
+        <Route path="/mapa"        element={<MapaPage />}   />
         <Route path="/actividades" element={<Actividades />}/>
         <Route path="/rutas"       element={<Rutas />}      />
         <Route path="/login"       element={<Login />}      />

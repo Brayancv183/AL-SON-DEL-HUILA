@@ -256,3 +256,256 @@
 .spinner { animation: spin 0.8s linear infinite; }
 
 @keyframes spin { to { transform: rotate(360deg); } }
+
+/* ===== Controles de viaje (presupuesto / días) ===== */
+.controlesViaje {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid var(--color-border, rgba(255,255,255,0.06));
+}
+
+.controlGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.controlLabel {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.chipsControl {
+  display: flex;
+  gap: 0.3rem;
+  flex-wrap: wrap;
+}
+
+.chipControl {
+  font-size: 0.68rem;
+  padding: 0.22rem 0.55rem;
+  border-radius: 999px;
+  border: 1px solid var(--color-border, rgba(255,255,255,0.1));
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: var(--font-body);
+}
+
+.chipControl:hover {
+  border-color: var(--color-dorado, #d4a843);
+  color: var(--text-primary);
+}
+
+.chipControlActivo {
+  background: rgba(212,168,67,0.15);
+  border-color: var(--color-dorado, #d4a843);
+  color: var(--color-dorado, #d4a843);
+  font-weight: 600;
+}
+
+/* ===== Info de ruta generada ===== */
+.rutaInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+
+.presupuestoTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  color: var(--color-dorado, #d4a843);
+  font-weight: 600;
+}
+/* ===== Barra de herramientas Huily IA ===== */
+.barraHerramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+}
+.herrLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-dorado, #d4a843);
+  margin-right: 0.2rem;
+}
+.chipHerr {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.chipHerr:hover:not(:disabled) {
+  border-color: var(--color-dorado, #d4a843);
+  background: rgba(212,168,67,0.12);
+}
+.chipHerr:disabled { opacity: 0.5; cursor: not-allowed; }
+.chipHerrActivo {
+  border-color: var(--color-dorado, #d4a843);
+  background: rgba(212,168,67,0.22);
+  color: var(--color-dorado, #d4a843);
+  font-weight: 700;
+}
+.grupoIdioma {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  margin-left: auto;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 999px;
+  color: var(--color-dorado, #d4a843);
+}
+.chipIdioma {
+  padding: 0.15rem 0.45rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.chipIdioma:hover { background: rgba(212,168,67,0.15); }
+.chipIdiomaActivo {
+  background: var(--color-dorado, #d4a843);
+  color: #fff;
+}
+
+/* ===== Panel de formulario de herramienta ===== */
+.panelHerramienta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  margin: 0 0.8rem;
+  border: 1px dashed var(--color-dorado, #d4a843);
+  border-radius: 12px;
+  background: rgba(212,168,67,0.06);
+}
+.inputHerr,
+.textareaHerr {
+  width: 100%;
+  padding: 0.45rem 0.6rem;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: inherit;
+  background: transparent;
+  border: 1px solid var(--color-border, #e5e7eb);
+  border-radius: 8px;
+  outline: none;
+  resize: vertical;
+}
+.inputHerr:focus,
+.textareaHerr:focus { border-color: var(--color-dorado, #d4a843); }
+.notaHerr {
+  margin: 0;
+  font-size: 0.72rem;
+  line-height: 1.5;
+  opacity: 0.85;
+}
+.accionesHerr {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+.btnCancelarHerr,
+.btnEjecutarHerr {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.btnCancelarHerr {
+  background: transparent;
+  border: 1px solid var(--color-border, #e5e7eb);
+  color: inherit;
+}
+.btnCancelarHerr:hover { border-color: #ef4444; color: #ef4444; }
+.btnEjecutarHerr {
+  background: var(--color-dorado, #d4a843);
+  border: 1px solid var(--color-dorado, #d4a843);
+  color: #fff;
+}
+.btnEjecutarHerr:hover:not(:disabled) { filter: brightness(1.08); }
+.btnEjecutarHerr:disabled { opacity: 0.6; cursor: wait; }
+
+/* ===== Resultados IA (empaque / frases / nombre) ===== */
+.resultadoIA {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border, #e5e7eb);
+}
+.tituloResultado {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-dorado, #d4a843);
+}
+.categoriaEmpaque {
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.categoriaEmpaque ul {
+  margin: 0.2rem 0 0;
+  padding-left: 1.1rem;
+}
+.grupoFrases {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+.grupoFrases strong {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-dorado, #d4a843);
+}
+.fraseItem { margin: 0; }
+.fraseUso { opacity: 0.65; font-size: 0.7rem; }
+.nombreRutaIA {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-dorado, #d4a843);
+}

@@ -6,10 +6,11 @@ import {
   PiLockDuotone,
   PiShieldDuotone,
 } from "react-icons/pi"
-import AuthInput    from "../components/auth/AuthInput"
-import AuthButton   from "../components/auth/AuthButton"
-import GoogleButton from "../components/auth/GoogleButton"
+import AuthInput    from "../components/Auth/AuthInput"
+import AuthButton   from "../components/Auth/AuthButton"
+import GoogleButton from "../components/Auth/GoogleButton"
 import { useRegister, getPasswordStrength } from "../hooks/useAuth"
+import { API_URL } from "../api/config"
 import styles from "./Register.module.css"
 import logo from "../assets/images/logo.png"
 
@@ -35,7 +36,8 @@ function PasswordStrength({ password }) {
 export default function Register() {
   const { fields, errors, globalError, loading, handleChange, handleSubmit } = useRegister()
 const handleGoogle = () => {
-  window.location.href = "http://127.0.0.1:8000/api/auth/google"
+  localStorage.setItem('redirectAfterGoogle', '/');
+  window.location.href = `${API_URL}/auth/google`
 }
   return (
     <div className={styles.page}>

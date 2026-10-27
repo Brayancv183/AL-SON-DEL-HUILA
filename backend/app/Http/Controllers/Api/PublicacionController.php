@@ -16,7 +16,8 @@ class PublicacionController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
+        // Guard sanctum: el token Bearer se resuelve aunque la ruta sea "pública"
+        $user = auth('sanctum')->user();
         
         $publicaciones = Publicacion::with('user')
             ->withCount('likes')
@@ -66,7 +67,7 @@ class PublicacionController extends Controller
      */
     public function like($id)
     {
-        $user = auth()->user();
+        $user = auth('sanctum')->user();
         if (!$user) {
             return response()->json(['message' => 'No autenticado'], 401);
         }

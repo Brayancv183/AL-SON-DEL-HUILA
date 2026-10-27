@@ -13,7 +13,7 @@ class Destino extends Model
         'nombre', 'descripcion', 'imagen',
         'latitud', 'longitud',
         'categoria_id', 'municipio_id', 'entorno_id',
-        'direccion', 'horario', 'estado'
+        'direccion', 'horario', 'precio_entrada', 'estado'
     ];
 
     // Relaciones
@@ -30,10 +30,10 @@ class Destino extends Model
     }
 
     public function etiquetas() {
-        return $this->belongsToMany(Etiqueta::class, 'destino_etiquetas');
+        return $this->belongsToMany(Etiqueta::class, 'destinos_etiquetas');
     }
 
     public function tiposViajero() {
-        return $this->belongsToMany(TipoViajero::class, 'destino_tipo_viajero', 'destino_id', 'tipo_viajero_id');
+        return $this->belongsToMany(TipoViajero::class, 'destinos_tipos_viajero', 'destino_id', 'tipo_viajero_id');
     }
 }

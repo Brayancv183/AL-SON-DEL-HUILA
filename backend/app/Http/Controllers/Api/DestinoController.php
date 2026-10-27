@@ -30,13 +30,15 @@ class DestinoController extends Controller
             $query->where('municipio_id', $request->municipio);
         }
 
-        // Filtro por etiquetas (comentado porque la tabla pivote no funciona)
-        // if ($request->has('etiquetas')) {
-        //     $etiquetas = explode(',', $request->etiquetas);
-        //     $query->whereHas('etiquetas', function($q) use ($etiquetas) {
-        //         $q->whereIn('etiquetas.id', $etiquetas);
-        //     });
-        // }
+        // Filtro por etiquetas (pivote destinos_etiquetas)
+        if ($request->has('etiquetas')) {
+            $etiquetas = array_filter(array_map('intval', explode(',', $request->etiquetas)));
+            if (!empty($etiquetas)) {
+                $query->whereHas('etiquetas', function ($q) use ($etiquetas) {
+                    $q->whereIn('etiquetas.id', $etiquetas);
+                });
+            }
+        }
 
         // Búsqueda por texto
         if ($request->has('busqueda')) {
@@ -45,6 +47,11 @@ class DestinoController extends Controller
                 $q->where('nombre',      'like', "%$busqueda%")
                   ->orWhere('descripcion','like', "%$busqueda%");
             });
+        }
+
+        $limit = min((int) $request->input('limit', 0), 200);
+        if ($limit > 0) {
+            $query->limit($limit);
         }
 
         return response()->json($query->get());
@@ -64,23 +71,32 @@ class DestinoController extends Controller
 public function buscar(Request $request)
 {
     $query = $request->input('q', '');
-    if (strlen($query) < 2) {
+    if (mb_strlen($query) < 2) {
         return response()->json([]);
     }
 
+    // Divide la consulta en palabras clave (sin acentos) para una búsqueda más útil
+    $palabras = preg_split('/\s+/u', mb_strtolower($query, 'UTF-8'), -1, PREG_SPLIT_NO_EMPTY);
+    $palabras = array_filter($palabras, fn ($p) => mb_strlen($p) >= 2);
+
     $destinos = Destino::with(['categoria', 'municipio'])
         ->where('estado', true)
-        ->where(function($q) use ($query) {
-            $q->where('nombre', 'like', "%{$query}%")
-              ->orWhere('descripcion', 'like', "%{$query}%")
-              ->orWhereHas('categoria', function($cat) use ($query) {
-                  $cat->where('nombre', 'like', "%{$query}%");
-              })
-              ->orWhereHas('municipio', function($mun) use ($query) {
-                  $mun->where('nombre', 'like', "%{$query}%");
-              });
+        ->where(function ($q) use ($palabras, $query) {
+            // Frase completa
+            $q->where(function ($qq) use ($query) {
+                $qq->where('nombre', 'like', "%{$query}%")
+                   ->orWhere('descripcion', 'like', "%{$query}%");
+            });
+            // O al menos 2 palabras clave en nombre/categoría/municipio
+            $q->orWhere(function ($qq) use ($palabras) {
+                foreach ($palabras as $p) {
+                    $qq->orWhere('nombre', 'like', "%{$p}%")
+                       ->orWhereHas('categoria', fn ($cat) => $cat->where('nombre', 'like', "%{$p}%"))
+                       ->orWhereHas('municipio', fn ($mun) => $mun->where('nombre', 'like', "%{$p}%"));
+                }
+            });
         })
-        ->limit(10)
+        ->limit(min((int) $request->input('limit', 10), 20))
         ->get();
 
     return response()->json($destinos);

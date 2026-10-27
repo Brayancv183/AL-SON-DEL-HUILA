@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import { PiMapPinDuotone } from "react-icons/pi"
 import styles from "./MapaRutas.module.css"
 
-export default function MapaRutas({ destinos = [], rutaActiva = null, onDestinoClick }) {
+export default function MapaRutas({ destinos = [], onDestinoClick }) {
   const mapaRef     = useRef(null)
   const instanceRef = useRef(null)
   const markersRef  = useRef([])
@@ -23,8 +23,9 @@ export default function MapaRutas({ destinos = [], rutaActiva = null, onDestinoC
       })
 
       const mapa = L.map(mapaRef.current, { center: [2.0, -75.5], zoom: 8, zoomControl: false, attributionControl: true })
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png", {
-        attribution: '© <a href="https://carto.com">CARTO</a>',
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+        subdomains: ['a', 'b', 'c'],
         maxZoom: 19,
       }).addTo(mapa)
       L.control.zoom({ position: "bottomright" }).addTo(mapa)

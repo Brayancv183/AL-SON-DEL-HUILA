@@ -2,10 +2,11 @@ import { useState } from "react"
 import { Link, useNavigate, useLocation } from "react-router-dom"
 import { motion } from "framer-motion"
 import { PiEnvelopeDuotone, PiLockDuotone } from "react-icons/pi"
-import AuthInput    from "../components/auth/AuthInput"
-import AuthButton   from "../components/auth/AuthButton"
-import GoogleButton from "../components/auth/GoogleButton"
+import AuthInput    from "../components/Auth/AuthInput"
+import AuthButton   from "../components/Auth/AuthButton"
+import GoogleButton from "../components/Auth/GoogleButton"
 import { useAuth } from "../context/AuthContext"
+import { API_URL } from "../api/config"
 import styles from "./Login.module.css"
 import logo from "../assets/images/logo.png"
 
@@ -35,7 +36,7 @@ export default function Login() {
 
   const handleGoogle = () => {
     localStorage.setItem('redirectAfterGoogle', window.location.pathname + window.location.search);
-    window.location.href = "http://localhost:8000/api/auth/google"
+    window.location.href = `${API_URL}/auth/google`
   }
 
   return (
@@ -90,11 +91,6 @@ export default function Login() {
             icon={PiLockDuotone}
             autoComplete="current-password"
           />
-          <div className={styles.forgotRow}>
-            <Link to="/forgot-password" className={styles.forgotLink}>
-              ¿Olvidaste tu contraseña?
-            </Link>
-          </div>
           <AuthButton loading={loading}>Iniciar sesión</AuthButton>
         </form>
 

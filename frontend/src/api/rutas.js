@@ -2,6 +2,7 @@ import { API_URL } from './config'
 
 const authHeader = () => ({
   'Content-Type':  'application/json',
+  'Accept':        'application/json',
   'Authorization': `Bearer ${localStorage.getItem('token')}`
 })
 

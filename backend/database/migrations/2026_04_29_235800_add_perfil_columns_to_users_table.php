@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('bio',       255)->nullable()->after('email');
-            $table->string('ubicacion', 100)->nullable()->after('bio');
-            $table->string('foto',      255)->nullable()->after('ubicacion');
+            $table->string('ubicacion_texto', 100)->nullable()->after('bio');
+            $table->string('foto',      255)->nullable()->after('ubicacion_texto');
             $table->string('foto_portada', 255)->nullable()->after('foto');
             $table->string('google_id', 100)->nullable()->unique()->after('foto_portada');
             $table->string('provider',   50)->default('local')->after('google_id');
@@ -23,7 +23,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn([
-                'bio', 'ubicacion', 'foto', 'foto_portada',
+                'bio', 'ubicacion_texto', 'foto', 'foto_portada',
                 'google_id', 'provider', 'google_token'
             ]);
         });

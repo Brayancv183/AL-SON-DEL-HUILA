@@ -11,9 +11,9 @@ use App\Http\Controllers\Api\RutaController;
 use App\Http\Controllers\Api\MunicipioController;
 use App\Http\Controllers\Api\EntornoController;
 use App\Http\Controllers\Api\EtiquetaController;
-use App\Http\Controllers\Api\ComentarioController;
 use App\Http\Controllers\Api\RecomendadorController;
 use App\Http\Controllers\Api\ChatController;
+use App\Http\Controllers\Api\IaExtrasController;
 
 // Rutas públicas
 Route::post('/auth/register', [AuthController::class, 'register']);
@@ -34,6 +34,17 @@ Route::get('/entornos', [EntornoController::class, 'index']);
 Route::get('/etiquetas', [EtiquetaController::class, 'index']);
 
 Route::post('/recomendar', [RecomendadorController::class, 'recomendar']);
+Route::post('/chat', [ChatController::class, 'chat'])->middleware('throttle:30,1');
+Route::post('/identificar-lugar', [ChatController::class, 'identificarLugar'])->middleware('throttle:20,1');
+
+// Herramientas extra de IA (Huily)
+Route::post('/ia/caption', [IaExtrasController::class, 'generarCaption'])->middleware('throttle:15,1');
+Route::post('/ia/empaque', [IaExtrasController::class, 'listaEmpaque'])->middleware('throttle:10,1');
+Route::post('/ia/etiquetas', [IaExtrasController::class, 'sugerirEtiquetas'])->middleware('throttle:15,1');
+Route::post('/ia/optimizar', [IaExtrasController::class, 'optimizarPresupuesto'])->middleware('throttle:10,1');
+Route::post('/ia/plan-grupal', [IaExtrasController::class, 'planGrupal'])->middleware('throttle:10,1');
+Route::post('/ia/frases', [IaExtrasController::class, 'frasesViaje'])->middleware('throttle:10,1');
+Route::post('/ia/nombre-ruta', [IaExtrasController::class, 'nombrarRuta'])->middleware('throttle:10,1');
 
 
 // Rutas protegidas (requieren autenticación)

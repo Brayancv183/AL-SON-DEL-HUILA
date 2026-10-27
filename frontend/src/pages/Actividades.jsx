@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import { PiMapPinDuotone, PiHeartDuotone, PiHeartFill } from 'react-icons/pi';
+import { identificarLugar, imagenADataUrl } from '../api/chat';
+import { generarCaption, sugerirEtiquetas } from '../api/ia';
+import { PiMapPinDuotone, PiHeartDuotone, PiHeartFill, PiSparkleDuotone } from 'react-icons/pi';
 import styles from './Actividades.module.css';
 
 function timeAgo(date) {
@@ -26,7 +28,7 @@ function timeAgo(date) {
 }
 
 export default function Actividades() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const [publicaciones, setPublicaciones] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,6 +36,11 @@ export default function Actividades() {
   const [formData, setFormData] = useState({ imagen: null, descripcion: '', ubicacion: '' });
   const [subiendo, setSubiendo] = useState(false);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [lugarSugerido, setLugarSugerido] = useState(null); // {lugar, municipio, confianza}
+  const [identificando, setIdentificando] = useState(false);
+  const [fotoDataUrl, setFotoDataUrl] = useState(null);
+  const [etiquetasSugeridas, setEtiquetasSugeridas] = useState([]); // ['Naturaleza', 'Fotografía']
+  const [escribiendoCaption, setEscribiendoCaption] = useState(false);
 
   useEffect(() => {
     cargarPublicaciones();
@@ -71,12 +78,67 @@ export default function Actividades() {
 
   const handleInputChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setFormData({ ...formData, imagen: file });
-      setPreviewUrl(URL.createObjectURL(file));
+    if (!file) return;
+    setFormData({ ...formData, imagen: file });
+    setPreviewUrl(URL.createObjectURL(file));
+    // Identificar el lugar con Huily (visión)
+    setLugarSugerido(null);
+    setEtiquetasSugeridas([]);
+    setIdentificando(true);
+    try {
+      const dataUrl = await imagenADataUrl(file, 1280, 0.85);
+      setFotoDataUrl(dataUrl);
+      // Ambas llamadas de visión en paralelo; cada una es opcional
+      const [ident, tags] = await Promise.allSettled([
+        identificarLugar(dataUrl),
+        sugerirEtiquetas(dataUrl),
+      ]);
+      if (ident.status === 'fulfilled' && ident.value.lugar && ident.value.confianza >= 30) {
+        setLugarSugerido(ident.value);
+      }
+      if (tags.status === 'fulfilled' && Array.isArray(tags.value.etiquetas)) {
+        setEtiquetasSugeridas(tags.value.etiquetas);
+      }
+    } catch {
+      // silencioso: las sugerencias de IA son opcionales
+    } finally {
+      setIdentificando(false);
     }
+  };
+
+  const aplicarLugarSugerido = () => {
+    if (!lugarSugerido) return;
+    const texto = lugarSugerido.municipio
+      ? `${lugarSugerido.lugar}, ${lugarSugerido.municipio}`
+      : lugarSugerido.lugar;
+    setFormData(prev => ({ ...prev, ubicacion: texto }));
+    setLugarSugerido(null);
+  };
+
+  const escribirCaption = async () => {
+    if (!fotoDataUrl || escribiendoCaption) return;
+    setEscribiendoCaption(true);
+    try {
+      const lugar = lugarSugerido?.lugar || formData.ubicacion || '';
+      const caption = await generarCaption(fotoDataUrl, lugar);
+      setFormData(prev => ({ ...prev, descripcion: caption }));
+    } catch {
+      alert('Huily no pudo escribir el caption ahora. Intenta de nuevo en unos segundos.');
+    } finally {
+      setEscribiendoCaption(false);
+    }
+  };
+
+  const toggleTag = (tag) => {
+    const hashtag = `#${tag.replace(/\s+/g, '')}`;
+    setFormData(prev => {
+      if (prev.descripcion.includes(hashtag)) {
+        return { ...prev, descripcion: prev.descripcion.replace(new RegExp(`\\s*${hashtag}`, 'g'), '') };
+      }
+      return { ...prev, descripcion: `${prev.descripcion}${prev.descripcion && !prev.descripcion.endsWith(' ') ? ' ' : ''}${hashtag} ` };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -93,6 +155,9 @@ export default function Actividades() {
       setShowModal(false);
       setFormData({ imagen: null, descripcion: '', ubicacion: '' });
       setPreviewUrl(null);
+      setLugarSugerido(null);
+      setFotoDataUrl(null);
+      setEtiquetasSugeridas([]);
     } catch (err) {
       console.error(err);
       alert('Error al publicar');
@@ -107,6 +172,15 @@ export default function Actividades() {
     } else {
       setShowModal(true);
     }
+  };
+
+  const cerrarModal = () => {
+    setShowModal(false);
+    setFormData({ imagen: null, descripcion: '', ubicacion: '' });
+    setPreviewUrl(null);
+    setLugarSugerido(null);
+    setFotoDataUrl(null);
+    setEtiquetasSugeridas([]);
   };
 
   if (loading) return <div className={styles.loading}>Cargando actividades...</div>;
@@ -188,11 +262,11 @@ export default function Actividades() {
 
       {/* Modal para nueva publicación */}
       {showModal && (
-        <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
+        <div className={styles.modalOverlay} onClick={cerrarModal}>
           <div className={styles.modalContainer} onClick={e => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h2>Compartir experiencia</h2>
-              <button className={styles.closeBtn} onClick={() => setShowModal(false)}>✕</button>
+              <button className={styles.closeBtn} onClick={cerrarModal}>✕</button>
             </div>
             <form onSubmit={handleSubmit} className={styles.modalForm}>
               <div className={styles.imageUploadArea}>
@@ -205,6 +279,9 @@ export default function Actividades() {
                       onClick={() => {
                         setFormData({ ...formData, imagen: null });
                         setPreviewUrl(null);
+                        setLugarSugerido(null);
+                        setFotoDataUrl(null);
+                        setEtiquetasSugeridas([]);
                       }}
                     >
                       Cambiar foto
@@ -218,7 +295,40 @@ export default function Actividades() {
                   </label>
                 )}
               </div>
+
+              {/* Sugerencia de lugar detectado por Huily */}
+              {identificando && (
+                <div className={styles.lugarDetectando}>
+                  <PiSparkleDuotone size={14} /> Huily está identificando el lugar de la foto...
+                </div>
+              )}
+              {lugarSugerido && (
+                <div className={styles.lugarSugerido}>
+                  <PiSparkleDuotone size={14} />
+                  <span>
+                    Huily detectó: <strong>{lugarSugerido.lugar}</strong>
+                    {lugarSugerido.municipio ? ` · ${lugarSugerido.municipio}` : ''}
+                    {` (${lugarSugerido.confianza}% seguro)`}
+                  </span>
+                  <button type="button" onClick={aplicarLugarSugerido} className={styles.btnUsarLugar}>
+                    Usar como ubicación
+                  </button>
+                </div>
+              )}
               <div className={styles.formFields}>
+                {fotoDataUrl && (
+                  <div className={styles.iaRow}>
+                    <button
+                      type="button"
+                      className={styles.btnCaption}
+                      onClick={escribirCaption}
+                      disabled={escribiendoCaption}
+                    >
+                      <PiSparkleDuotone size={13} />
+                      {escribiendoCaption ? 'Huily está escribiendo...' : 'Escribir caption con IA'}
+                    </button>
+                  </div>
+                )}
                 <textarea
                   name="descripcion"
                   value={formData.descripcion}
@@ -227,6 +337,23 @@ export default function Actividades() {
                   rows="3"
                   className={styles.textarea}
                 />
+                {etiquetasSugeridas.length > 0 && (
+                  <div className={styles.tagsSugeridas}>
+                    <span className={styles.tagsLabel}>
+                      <PiSparkleDuotone size={11} /> Huily sugiere:
+                    </span>
+                    {etiquetasSugeridas.map(tag => (
+                      <button
+                        key={tag}
+                        type="button"
+                        className={styles.tagChip}
+                        onClick={() => toggleTag(tag)}
+                      >
+                        #{tag.replace(/\s+/g, '')}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <input
                   type="text"
                   name="ubicacion"
@@ -237,7 +364,7 @@ export default function Actividades() {
                 />
               </div>
               <div className={styles.modalActions}>
-                <button type="button" className={styles.cancelBtn} onClick={() => setShowModal(false)}>
+                <button type="button" className={styles.cancelBtn} onClick={cerrarModal}>
                   Cancelar
                 </button>
                 <button type="submit" className={styles.submitBtn} disabled={subiendo}>

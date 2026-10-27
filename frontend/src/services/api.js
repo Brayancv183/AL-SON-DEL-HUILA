@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { API_URL } from '../api/config';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api', // Laravel corre en este puerto
+  baseURL: API_URL,
 });
 
 // Interceptor: agrega el token a cada petición si existe

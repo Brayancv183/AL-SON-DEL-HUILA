@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import { useAuth } from "../context/AuthContext";
@@ -20,7 +20,6 @@ import {
   PiShovelDuotone,
 } from "react-icons/pi"
 import styles from "./Quiz.module.css"
-import logo from "../assets/images/logo.png"
 
 // Preguntas conectadas a tu BD real
 const PREGUNTAS = [

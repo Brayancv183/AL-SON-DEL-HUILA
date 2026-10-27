@@ -639,6 +639,70 @@
   background: rgba(224,82,82,0.1);
 }
 
+/* Editor inline de publicación */
+.editPostForm {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+}
+
+.editPostForm textarea,
+.editPostForm input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  resize: vertical;
+}
+
+.editPostForm textarea:focus,
+.editPostForm input:focus {
+  outline: none;
+  border-color: var(--color-dorado);
+}
+
+.editPostActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.savePostBtn, .cancelPostBtn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: none;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.savePostBtn {
+  background: linear-gradient(135deg, #C4622D, #D4A843);
+  color: #fff;
+}
+
+.savePostBtn:hover { filter: brightness(1.1); }
+
+.cancelPostBtn {
+  background: none;
+  border: 1px solid var(--color-border);
+  color: var(--text-muted);
+}
+
+.cancelPostBtn:hover {
+  color: var(--text-primary);
+  border-color: var(--text-muted);
+}
+
 /* Modal cambio de contraseña */
 .modalOverlay {
   position: fixed;
